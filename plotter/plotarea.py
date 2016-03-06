@@ -40,5 +40,5 @@ def plot_stacked(concdf, outputfile="test.html"):
                 title="Plasma Concentration over Time",
                 xlabel="Time", ylabel="Concentration")
     output_file(outputfile, title="Concentraion Plot")
-    show(area)
+    # show(area)
     return
