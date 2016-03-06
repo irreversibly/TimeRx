@@ -19,10 +19,10 @@ def plot(concdf, outputfile="test.html"):
     # area = Area(data, legend='top_right',
     #             title="Plasma Concentration over Time",
     #             xlabel="Time", ylabel="Concentration", color=colors)
-    # newtime = concdf
-    # newtime["Times"] = map(lambda x: x/60, concdf["Times"])
+    newtime = concdf
+    newtime["Times"] = map(lambda x: float(x)/60, concdf["Times"])
 
-    data = pd.melt(concdf, id_vars="Times")
+    data = pd.melt(newtime, id_vars="Times")
 
     area = Area(data, x="Times", y="value", legend='top_right',
                 title="Plasma Concentration over Time",
