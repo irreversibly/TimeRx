@@ -13,13 +13,20 @@ import os
 
 def plot(concdf, outputfile="test.html"):
     newtime = concdf
-    newtime["Times"] = map(lambda x: float(x)/60, concdf["Times"])
+    newtime["Times"] = map(lambda x: (float(x)/60)-8, concdf["Times"])
 
     data = pd.melt(newtime, id_vars="Times")
-
+    # oldtimes = data["Times"]
+    # resettimes = []
+    # for time in oldtimes:
+    #     if time >= 24:
+    #         resettimes.append(time-24)
+    #     else:
+    #         resettimes.append(time)
+    # data["Times"] = resettimes
     area = Area(data, x="Times", y="value", legend='top_right',
                 title="T-Rx Optimized Treatment Schedule",
-                xlabel="Hour", ylabel="% Remaining in Patient", color="variable")
+                xlabel="Hours (post 8am)", ylabel="% Remaining in Patient", color="variable")
     output_file(outputfile, title="T-RxPlot")
     save(area)
     print os.getcwd()
