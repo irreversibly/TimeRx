@@ -11,15 +11,10 @@ def my_form():
 
 @app.route('/', methods=['POST'])
 def form():
-    # if request.method == 'POST':
     drug1 = request.form['drug1']
     dose1 = request.form['dose1']
     processed_text = drug1 + dose1
-    # a = request.args.get('Number_doses', type=int)
-    # print processed_text
     return processed_text
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
     # return render_template('form.html')
 
 
