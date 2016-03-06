@@ -2,7 +2,7 @@ index,drug_names,t_abs,t_elim,side_eff_single,side_eff_double
 1,"['aspirin', 'pear', 'apple']",10,120,A,"(2, 'A')"
 2,"['imatinib']",10,120,,
 3,"['imatinib2']",10,120,,
-4,"['vicodin']",30,240,,
-5,"['nadolol']",120,600,,
-6,"['simvastin']",75,120,,
-7,"['atanazavir']",15,420,,
+4,"['vicodin']",30,180,,
+5,"['nadolol']",120,252,,
+6,"['simvastin']",75,126,,
+7,"['atanazavir']",145,178,,
