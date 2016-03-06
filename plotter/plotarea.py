@@ -11,5 +11,5 @@ def plot(concdf, outputfile):
                 title="Plasma Concentration over Time",
                 xlabel="Time", ylabel="Concentration")
     output_file(outputfile, title="Concentraion Plot")
-    show(area)
+    # show(area)
     return
