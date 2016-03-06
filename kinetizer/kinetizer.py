@@ -19,7 +19,7 @@ class Kinetizer():
     def import_data(self):
         data_main_reader = csv.DictReader(open('../data/drugs_main.csv'))
         data_side_effects_reader = csv.DictReader(open('../data/drugs_side_effects.csv'))
-        data_main = {}
+        self.data_main = data_main = {}
         data_side_effects = {}
         # fill in drug_name_translator
         for entry in data_main_reader:
@@ -34,10 +34,14 @@ class Kinetizer():
         for entry in data_side_effects_reader:
             data_side_effects[entry['index']] = entry['description']
         for drug in self.drugs:
+            translated = False
             for index in self.drug_name_translator:
                 if drug in self.drug_name_translator[index]:
                     drug_index = index
+                    translated = True
                     break
+            if not translated:
+                raise RuntimeError('Drug not found')    
             #self.drugs[drug]['bioavailability_fraction'] = data_main[drug_index]['bioaval_fraction']
             self.drugs[drug]['absorption_time_to_peak'] = data_main[drug_index]['t_abs']
             self.drugs[drug]['elimination_half_life'] = data_main[drug_index]['t_elim']
@@ -118,13 +122,14 @@ class Kinetizer():
         
     def optimize_schedule(self):
         # hardcode interactions
-        interactions = [(0,1,2), (0,2,1), (1,2,3)]
+        interactions = [(0,1,2), (0,2,0), (0,3,1), (1,2,3), (1,3,0), (2,3,2)]
+        #interactions = [(0,1,2), (0,2,0), (1,2,3)]
         start_day = 0
         stop_day = 1440
         morning = 480
         evening = 1320
         #lunch = 780
-        interval = 60
+        interval = 120
         no_drugs = len(self.drugs)
         drug_names = {}
         counter = 0
@@ -139,13 +144,27 @@ class Kinetizer():
             #out_combinations = list(itertools.combinations(out_list, 2))
             #for combination in out_combinations:
                 #if combination[0] != 0 and combination[1] != 0:
-                    #out = sum(combination) * 
-            if out_list[0] != 0 and out_list[1] != 0:
-                out += (out_list[0] + out_list[1]) * interactions[0][2]
-            if out_list[0] != 0 and out_list[2] != 0:
-                out += (out_list[0] + out_list[2]) * interactions[1][2]
-            if out_list[1] != 0 and out_list[2] != 0:
-                out += (out_list[0] + out_list[2]) * interactions[2][2] 
+                    #out = sum(combination) *
+            if no_drugs == 3:        
+                if out_list[0] != 0 and out_list[1] != 0:
+                    out += (out_list[0] + out_list[1]) * interactions[0][2]
+                if out_list[0] != 0 and out_list[2] != 0:
+                    out += (out_list[0] + out_list[2]) * interactions[1][2]
+                if out_list[1] != 0 and out_list[2] != 0:
+                    out += (out_list[0] + out_list[2]) * interactions[2][2]
+            if no_drugs == 4:
+                if out_list[0] != 0 and out_list[1] != 0:
+                    out += (out_list[0] + out_list[1]) * interactions[0][2]
+                if out_list[0] != 0 and out_list[2] != 0:
+                    out += (out_list[0] + out_list[2]) * interactions[1][2]
+                if out_list[0] != 0 and out_list[3] != 0:
+                    out += (out_list[0] + out_list[3]) * interactions[2][2]
+                if out_list[1] != 0 and out_list[2] != 0:
+                    out += (out_list[1] + out_list[2]) * interactions[3][2]
+                if out_list[1] != 0 and out_list[3] != 0:
+                    out += (out_list[1] + out_list[3]) * interactions[4][2]
+                if out_list[2] != 0 and out_list[3] != 0:
+                    out += (out_list[2] + out_list[3]) * interactions[5][2]          
             return out
         the_range = range(morning, evening, interval)
         if no_drugs == 2:
