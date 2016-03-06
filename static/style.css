@@ -2,7 +2,7 @@ body            { font-family: sans-serif; background: #eee; }
 .form-style-10{
         max-width:450px;
         padding:30px;
-        margin:40px auto;
+        margin:20px auto;
         background: #FFF;
         border-radius: 10px;
         -webkit-border-radius:10px;
@@ -18,9 +18,9 @@ body            { font-family: sans-serif; background: #eee; }
         margin-bottom: 8px;
 }
 .form-style-10 h1{
-        background: #2A88AD;
-        padding: 20px 30px 15px 30px;
-        margin: -30px -30px 30px -30px;
+        background: #92B1CA;
+        padding: 0px 30px 15px 30px;
+        margin: -30px -30px 10px -30px;
         border-radius: 10px 10px 0 0;
         -webkit-border-radius: 10px 10px 0 0;
         -moz-border-radius: 10px 10px 0 0;
@@ -34,12 +34,12 @@ body            { font-family: sans-serif; background: #eee; }
 }
 .form-style-10 h1 > span{
         display: block;
-        margin-top: 2px;
-        font: 13px Arial, Helvetica, sans-serif;
+        margin-top: -10px;
+        font: 17px Arial, Helvetica, sans-serif;
 }
 .form-style-10 label{
         display: block;
-        font: 13px Arial, Helvetica, sans-serif;
+        font: 15px Arial, Helvetica, sans-serif;
         color: #888;
         margin-bottom: 5px;
 }
@@ -74,7 +74,7 @@ body            { font-family: sans-serif; background: #eee; }
         margin-bottom: 5px;
 }
 .form-style-10 .section span {
-        background: #2A88AD;
+        background: #E38110;
         padding: 5px 10px 5px 10px;
         position: absolute;
         border-radius: 50%;
@@ -88,7 +88,7 @@ body            { font-family: sans-serif; background: #eee; }
 }
 .form-style-10 input[type="button"],
 .form-style-10 input[type="submit"]{
-        background: #2A88AD;
+        background: #E38110;
         padding: 8px 20px 8px 20px;
         border-radius: 5px;
         -webkit-border-radius: 5px;
