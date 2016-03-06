@@ -129,7 +129,7 @@ class Kinetizer():
         morning = 480
         evening = 1320
         #lunch = 780
-        interval = 120
+        interval = 60
         no_drugs = len(self.drugs)
         drug_names = {}
         counter = 0
