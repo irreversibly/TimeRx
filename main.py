@@ -14,12 +14,21 @@ app = Flask(__name__)
 
 def getdata(druglist):
     os.chdir("kinetizer")
-    # currently hard coded starttimes
-    starttimes={'nadolol':480, 'simvastin':1260, 'atazanavir':480, 'vicodin':780}
-    kinetizerinput = {}
-    for drug in druglist:
-        kinetizerinput[drug] = {'start_time':starttimes[drug]}
-    kin = Kinetizer(kinetizerinput)
+    if len(druglist) == 3:
+        drugs = ["nadolol", "simvastin", "atazanavir"]
+        kin = Kinetizer(drugs)
+        kin.load_demo()
+        schedlist = kin.get_schedule()
+    elif len(druglist) == 4:
+        drugs = ["nadolol", "simvastin", "atazanavir", "vicodin"]
+        kin = Kinetizer(drugs)
+        kin.load_demo()
+        schedlist = kin.get_schedule()
+    else:
+        drugs = druglist
+        kin = Kinetizer(drugs)
+        for i in range(len(drugs)):
+            kin.drugs[drugs[i]] = {"start_time": 0}
     concdata = kin.return_dataframe()
     # schedule = kin.get_schedule()
     # schedule.to_csv("templates/schedule.csv")
