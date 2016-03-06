@@ -1,4 +1,0 @@
-Drug	Time	Dosage
-Ibuprofin	8am	12mg
-Penicllin	12pm	3mg
-SSRI	3pm	5mg
