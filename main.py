@@ -64,12 +64,13 @@ def form():
             drugsinput.append(drug)
 
     concdict, scheddict = getdata(drugsinput)
-    plot(concdict, "templates/areaplot.html")
+    plot(concdict, "static/areaplot.html")
     # druvasfunction("templates/schedule.csv", "templates/areaplot.html", "report.html")
     # processed_text = drug1 + dose1
     # return processed_text
-    return render_template("areaplot.html")
-
+    # return render_template("areaplot.html")
+    return render_template("Demo_Report.html")
+    # return app.send_static_file('Demo_Report.html')
 
 if __name__ == '__main__':
     app.debug = True
