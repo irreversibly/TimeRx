@@ -1,6 +1,6 @@
 body            { font-family: sans-serif; background: #eee; }
 .form-style-10{
-        max-width:450px;
+        max-width:700px;
         padding:30px;
         margin:20px auto;
         background: #FFF;
@@ -15,7 +15,7 @@ body            { font-family: sans-serif; background: #eee; }
         padding: 20px;
         background: #F8F8F8;
         border-radius: 6px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
 }
 .form-style-10 h1{
         background: #92B1CA;
@@ -24,7 +24,7 @@ body            { font-family: sans-serif; background: #eee; }
         border-radius: 10px 10px 0 0;
         -webkit-border-radius: 10px 10px 0 0;
         -moz-border-radius: 10px 10px 0 0;
-        color: #fff;
+        color: #000;
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
         font: normal 30px 'Bitter', serif;
         -moz-box-shadow: inset 0px 0px 2px 0px rgba(255, 255, 255, 0.17);
@@ -35,11 +35,11 @@ body            { font-family: sans-serif; background: #eee; }
 .form-style-10 h1 > span{
         display: block;
         margin-top: -10px;
-        font: 17px Arial, Helvetica, sans-serif;
+        font: 18px Arial, Helvetica, sans-serif;
 }
 .form-style-10 label{
         display: block;
-        font: 15px Arial, Helvetica, sans-serif;
+        font: 16px Arial, Helvetica, sans-serif;
         color: #888;
         margin-bottom: 5px;
 }
