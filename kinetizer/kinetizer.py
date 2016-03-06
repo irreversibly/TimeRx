@@ -6,8 +6,8 @@ import pandas as pd
 from collections import OrderedDict
 
 # demo
-#drugs3 = ['nadolol', 'simvastin', 'atazanavir']
-#drugs4 = ['nadolol', 'simvastin', 'atazanavir', 'vicodin']
+#drugs3 = ['nadolol', 'simvastatin', 'atazanavir']
+#drugs4 = ['nadolol', 'simvastatin', 'atazanavir', 'vicodin']
 
 class Kinetizer():
 
@@ -17,7 +17,6 @@ class Kinetizer():
             self.drugs[drug] = {}
         self.drug_name_translator = {}
         self.import_data()
-        self.schedule = []
         # for demo
         #self.load_demo()
 
