@@ -117,12 +117,14 @@ class Kinetizer():
     #    return AUC
         
     def optimize_schedule(self):
+        # hardcode interactions
+        interactions = [(0,1,2), (0,2,1), (1,2,3)]
         start_day = 0
         stop_day = 1440
         morning = 480
         evening = 1320
         #lunch = 780
-        interval = 30
+        interval = 60
         no_drugs = len(self.drugs)
         drug_names = {}
         counter = 0
@@ -134,14 +136,40 @@ class Kinetizer():
             out = 0
             for x in drug_names:
                 out_list.append(self.master_function(drug_names[x], entry[x], T))
+            #out_combinations = list(itertools.combinations(out_list, 2))
+            #for combination in out_combinations:
+                #if combination[0] != 0 and combination[1] != 0:
+                    #out = sum(combination) * 
             if out_list[0] != 0 and out_list[1] != 0:
-                out = sum(out_list)
+                out += (out_list[0] + out_list[1]) * interactions[0][2]
+            if out_list[0] != 0 and out_list[2] != 0:
+                out += (out_list[0] + out_list[2]) * interactions[1][2]
+            if out_list[1] != 0 and out_list[2] != 0:
+                out += (out_list[0] + out_list[2]) * interactions[2][2] 
             return out
-        
-        time_matrix = list(itertools.combinations_with_replacement(range(morning, evening, interval), no_drugs))
+        the_range = range(morning, evening, interval)
+        if no_drugs == 2:
+            time_matrix = [(x,y) for x in the_range for y in the_range]
+        elif no_drugs == 3:
+            time_matrix = [(x,y,z) for x in the_range for y in the_range for z in the_range]
+        elif no_drugs == 4:
+            time_matrix = [(x,y,z,w) for x in the_range for y in the_range for z in the_range for w in the_range]
+        else:
+            raise RuntimeError('Too many drugs you moron')            
         time_matrix_results = []
         for entry in time_matrix:
             f = lambda T: sum_function(entry, T)            
             AUC = integrate.quad(f, morning, 5*stop_day, limit=150)
             time_matrix_results.append((AUC, entry))
         return time_matrix_results
+        
+    def find_min(self, time_matrix_results):
+        holding_list = []
+        for entry in time_matrix_results:
+            holding_list.append(entry[0][0])
+        minimum = min(holding_list)
+        min_times = []
+        for entry in time_matrix_results:
+            if entry[0][0] == minimum:
+                min_times.append(entry[1])
+        return min_times
