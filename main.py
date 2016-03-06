@@ -2,20 +2,31 @@ from flask import Flask
 from flask import request
 from flask import render_template
 import pandas as pd
-
+import os
 import sys
 sys.path.insert(0, './kinetizer')
 sys.path.insert(0, './plotter')
 from plotarea import plot
-# from kinetizer import *
+from kinetizer import Kinetizer
 
 app = Flask(__name__)
 
-# placeholders for functions to be imported
-def rafalsfunction(list):
-    return None, None
-def druvasfunction():
-    pass
+
+def getdata(druglist):
+    os.chdir("kinetizer")
+    kinetizerinput = {}
+    for drug in druglist:
+        kinetizerinput[drug] = {'start_time':1200}
+    kin = Kinetizer(kinetizerinput)
+    concdata = kin.return_dataframe()
+    # schedule = kin.get_schedule()
+    # schedule.to_csv("templates/schedule.csv")
+    os.chdir("../")
+    # return concdata, schedule
+    return concdata, None
+# # # placeholders for functions to be imported
+# def druvasfunction():
+#     pass
 
 
 @app.route('/')
@@ -41,13 +52,12 @@ def form():
         if len(drug) > 0:
             drugsinput.append(drug)
 
-    concdict, scheddict = rafalsfunction(drugsinput)
-    concdf = pd.DataFrame.from_dict(concdict)
-    plot(concdf, "areaplot.html")
-    druvasfunction(scheddict, "areaplot.html", "report.html")
+    concdict, scheddict = getdata(drugsinput)
+    plot(concdict, "templates/areaplot.html")
+    # druvasfunction("templates/schedule.csv", "templates/areaplot.html", "report.html")
     # processed_text = drug1 + dose1
     # return processed_text
-    return render_template('report.html')
+    return render_template("areaplot.html")
 
 
 if __name__ == '__main__':

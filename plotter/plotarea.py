@@ -3,8 +3,8 @@ import pandas as pd
 # import seaborn as sns
 # import numpy as np
 from bokeh.charts import Area
-from bokeh.plotting import output_file, show
-
+from bokeh.plotting import output_file, save
+import os
 # sns.set_palette('dark')
 
 # orange, green, blue, yellow
@@ -12,13 +12,6 @@ from bokeh.plotting import output_file, show
 
 
 def plot(concdf, outputfile="test.html"):
-    # divide by 60 for time
-    # get x val to be time
-    # data = concdf.set_index(['Times'])
-    # data = concdf
-    # area = Area(data, legend='top_right',
-    #             title="Plasma Concentration over Time",
-    #             xlabel="Time", ylabel="Concentration", color=colors)
     newtime = concdf
     newtime["Times"] = map(lambda x: float(x)/60, concdf["Times"])
 
@@ -28,6 +21,8 @@ def plot(concdf, outputfile="test.html"):
                 title="T-Rx Optimized Treatment Schedule",
                 xlabel="Hour", ylabel="% Remaining in Patient", color="variable")
     output_file(outputfile, title="T-RxPlot")
+    save(area)
+    print os.getcwd()
     # show(area)
     return
 
