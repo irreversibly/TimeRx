@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-from simtk import unit as u
+#from simtk import unit as u
 import math
 import scipy.integrate as integrate
 import csv
@@ -78,10 +78,13 @@ class Kinetizer():
             C = 0
         elif Trel <= Tpeak:
             C = Trel / Tpeak
-        elif Trel > Tpeak: #and Trel <= Tpeak + 5*Telim:
+        elif Trel > Tpeak and Trel <= Tpeak + 5*Telim:
             C = (0.5)**((Trel-Tpeak)/Telim)
-        #elif Trel > Tpeak + 5*Telim:
-        #    C = 0
+        # at Trel == Tpeak + 5*Telim + 1e-10 I want it 0
+        elif Trel > Tpeak + 5*Telim and Trel <= Tpeak + 5*Telim + 1e-10:
+            C = -1e-10*Trel + 1e-10(Tpeak+5*Telim+1e-10)
+        elif Trel > Tpeak + 5*Telim + 1e-10:
+            C = 0
         return C
 
     def return_dataframe(self):
@@ -122,14 +125,14 @@ class Kinetizer():
         
     def optimize_schedule(self):
         # hardcode interactions
-        interactions = [(0,1,2), (0,2,0), (0,3,1), (1,2,3), (1,3,0), (2,3,2)]
-        #interactions = [(0,1,2), (0,2,0), (1,2,3)]
+        #interactions = [(0,1,2), (0,2,0), (0,3,1), (1,2,3), (1,3,0), (2,3,2)]
+        interactions = [(0,1,2), (0,2,0), (1,2,3)]
         start_day = 0
         stop_day = 1440
         morning = 480
         evening = 1320
         #lunch = 780
-        interval = 120
+        interval = 60
         no_drugs = len(self.drugs)
         drug_names = {}
         counter = 0
@@ -164,15 +167,18 @@ class Kinetizer():
                 if out_list[1] != 0 and out_list[3] != 0:
                     out += (out_list[1] + out_list[3]) * interactions[4][2]
                 if out_list[2] != 0 and out_list[3] != 0:
-                    out += (out_list[2] + out_list[3]) * interactions[5][2]          
+                    out += (out_list[2] + out_list[3]) * interactions[5][2]                 
             return out
         the_range = range(morning, evening, interval)
+        vicodin_start = 660
+        vicodin_end = 840
+        the_vicodin_range = range(vicodin_start, vicodin_end, interval)
         if no_drugs == 2:
             time_matrix = [(x,y) for x in the_range for y in the_range]
         elif no_drugs == 3:
             time_matrix = [(x,y,z) for x in the_range for y in the_range for z in the_range]
         elif no_drugs == 4:
-            time_matrix = [(x,y,z,w) for x in the_range for y in the_range for z in the_range for w in the_range]
+            time_matrix = [(x,y,z,w) for x in the_range for y in the_range for z in the_range for w in the_vicodin_range]   
         else:
             raise RuntimeError('Too many drugs you moron')            
         time_matrix_results = []
