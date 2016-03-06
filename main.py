@@ -63,8 +63,8 @@ def form():
         if len(drug) > 0:
             drugsinput.append(drug)
 
-    concdict, scheddict = getdata(drugsinput)
-    plot(concdict, "areaplot.html")
+    # concdict, scheddict = getdata(drugsinput)
+    # plot(concdict, "static/areaplot.html")
     # druvasfunction("templates/schedule.csv", "templates/areaplot.html", "report.html")
     # processed_text = drug1 + dose1
     # return processed_text
