@@ -25,10 +25,10 @@ def plot(concdf, outputfile="test.html"):
     data = pd.melt(newtime, id_vars="Times")
 
     area = Area(data, x="Times", y="value", legend='top_right',
-                title="Plasma Concentration over Time",
-                xlabel="Hour", ylabel="Concentration", color="variable")
-    output_file(outputfile, title="Concentraion Plot")
-    show(area)
+                title="T-Rx Optimized Treatment Schedule",
+                xlabel="Hour", ylabel="% Remaining in Patient", color="variable")
+    output_file(outputfile, title="T-RxPlot")
+    # show(area)
     return
 
 
