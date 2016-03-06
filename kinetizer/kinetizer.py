@@ -19,7 +19,7 @@ class Kinetizer():
     def import_data(self):
         data_main_reader = csv.DictReader(open('../data/drugs_main.csv'))
         data_side_effects_reader = csv.DictReader(open('../data/drugs_side_effects.csv'))
-        data_main = {}
+        self.data_main = data_main = {}
         data_side_effects = {}
         # fill in drug_name_translator
         for entry in data_main_reader:
@@ -38,6 +38,8 @@ class Kinetizer():
                 if drug in self.drug_name_translator[index]:
                     drug_index = index
                     break
+                else:
+                    raise RuntimeError('Drug not found')    
             #self.drugs[drug]['bioavailability_fraction'] = data_main[drug_index]['bioaval_fraction']
             self.drugs[drug]['absorption_time_to_peak'] = data_main[drug_index]['t_abs']
             self.drugs[drug]['elimination_half_life'] = data_main[drug_index]['t_elim']
@@ -118,7 +120,8 @@ class Kinetizer():
         
     def optimize_schedule(self):
         # hardcode interactions
-        interactions = [(0,1,2), (0,2,1), (1,2,3)]
+        #interactions = [(0,1,2), (0,2,0), (0,3,1), (1,2,3), (1,3,0), (2,3,2)]
+        interactions = [(0,1,2), (0,2,0), (1,2,3)]
         start_day = 0
         stop_day = 1440
         morning = 480
