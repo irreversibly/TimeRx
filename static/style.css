@@ -37,6 +37,11 @@ body            { font-family: sans-serif; background: #eee; }
         margin-top: -10px;
         font: 18px Arial, Helvetica, sans-serif;
 }
+.form-style-10 h2{
+        display: block;
+        margin-top: 5px;
+        font: 28px Arial, Helvetica, sans-serif;
+}
 .form-style-10 label{
         display: block;
         font: 16px Arial, Helvetica, sans-serif;
@@ -193,7 +198,7 @@ body            { font-family: sans-serif; background: #eee; }
         border:0px solid #000000;
         text-align:center;
         border-width:0px 0px 1px 1px;
-        font-size:29px;
+        font-size:22px;
         font-family:Helvetica;
         font-weight:normal;
         color:#ffffff;
