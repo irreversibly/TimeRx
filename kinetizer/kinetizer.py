@@ -3,16 +3,18 @@ from simtk import unit as u
 import math
 import scipy.integrate as integrate
 import csv
+import itertools
 #import numpy as np
-#import pandas as pd
+import pandas as pd
 
 class Kinetizer():
 
     def __init__(self, drugs):
-        # drugs is a dict of dictionaries {'ibuprofen': {dose: '', start_time}}
+        # drugs is a dict of dictionaries {'ibuprofen': {'start_time':0}}
         self.drugs = drugs
         #self.patient_weight = patient_weight
         self.drug_name_translator = {}
+        self.import_data()
 
     def import_data(self):
         data_main_reader = csv.DictReader(open('../data/drugs_main.csv'))
@@ -46,40 +48,60 @@ class Kinetizer():
 
         #self.body_volume = 1 # should be some function of patient_weight
 
-    def calculate_plasma_conc(self, drug_name, conc_time):
-        drug_data = self.drugs[drug_name]
-        T = conc_time
+    #def calculate_plasma_conc(self, drug_name, conc_time):
+    #    drug_data = self.drugs[drug_name]
+    #    T = conc_time
         #F = drug_data['bioavailability_fraction']
-        Tpeak = drug_data['absorption_time_to_peak']
-        Telim = drug_data['elimination_half_life']
+    #    Tpeak = drug_data['absorption_time_to_peak']
+    #    Telim = drug_data['elimination_half_life']
         #D = drug_data['dose']
         #V = self.body_volume
-        if T <= Tpeak:
-            C = T / Tpeak
-        else:
-            C = (0.5)**((T-Tpeak)/Telim)
+    #    if T <= Tpeak:
+    #        C = T / Tpeak
+    #    else:
+    #        C = (0.5)**((T-Tpeak)/Telim)
 
         # master equation
         #C = (F*Ka*D)/(V*(Ka-Ke)) * (math.exp(-Ke*T) - math.exp(-Ka*T))
+    #    return C
+        
+    def master_function(self, drug_name, Tstart, T):
+        drug_data = self.drugs[drug_name]
+        Trel = T - Tstart
+        Tpeak = drug_data['absorption_time_to_peak']
+        Telim = drug_data['elimination_half_life']
+        if Trel < 0: 
+            C = 0
+        elif Trel <= Tpeak:
+            C = Trel / Tpeak
+        elif Trel > Tpeak: #and Trel <= Tpeak + 5*Telim:
+            C = (0.5)**((Trel-Tpeak)/Telim)
+        #elif Trel > Tpeak + 5*Telim:
+        #    C = 0
         return C
 
     def return_dataframe(self):
         dataframe = {}
+        dataframe['Times'] = []
         for drug in self.drugs:
             drug_list = dataframe[drug] = []
-            # iterate over timees - time in minutes
-            for time in range(0, 5*int(self.drugs[drug]['elimination_half_life']), 15): # every 15 minutes, up to 5 halflives - steady state
-                drug_list.append(((self.drugs[drug]['start_time'] + time), self.calculate_plasma_conc(drug, time)))
+            
+            # iterate over timee - time in minutes
+            #for time in range(0, 5*int(self.drugs[drug]['elimination_half_life']), 15): # every 15 minutes, up to 5 halflives - steady state
+            for time in range(480, 1950, 2):
+                drug_list.append(self.master_function(drug, self.drugs[drug]['start_time'], time))
+        dataframe['Times'] = range(480, 1950, 2)                        
             # make sure you have value for Tpeak
-            time = self.drugs[drug]['absorption_time_to_peak']
-            drug_list.append(((self.drugs[drug]['start_time'] + time), self.calculate_plasma_conc(drug, time)))
+            #time = self.drugs[drug]['absorption_time_to_peak']
+            #drug_list.append(((self.drugs[drug]['start_time'] + time), self.master_function(drug, 0, time)))
+        dataframe = pd.DataFrame.from_dict(dataframe)
         return dataframe
 
-    def integrate_AUC(self, drug_name):
-        drug_data = self.drugs[drug_name]
+    #def integrate_AUC_full(self, drug_name):
+    #    drug_data = self.drugs[drug_name]
         #F = drug_data['bioavailability_fraction']
-        Tpeak = drug_data['absorption_time_to_peak']
-        Telim = drug_data['elimination_half_life']
+    #    Tpeak = drug_data['absorption_time_to_peak']
+    #    Telim = drug_data['elimination_half_life']
         #Ka = math.log(2)/drug_data['absorption_half_life']
         #Ke = math.log(2)/drug_data['elimination_half_life']
         #D = drug_data['dose']
@@ -87,9 +109,39 @@ class Kinetizer():
         # master equation
         #C = lambda T: (F*Ka*D)/(V*(Ka-Ke)) * (math.exp(-Ke*T) - math.exp(-Ka*T))
         # 5 halflives hardcoded here
-        C1 = lambda T: T / Tpeak
-        C2 = lambda T: (0.5)**((T-Tpeak)/Telim)
-        AUC1 = integrate.quad(C1, 0, Tpeak)
-        AUC2 = integrate.quad(C2, Tpeak, 5*Telim)
-        AUC = AUC1 + AUC2
-        return AUC    
+    #    C1 = lambda T: T / Tpeak
+    #    C2 = lambda T: (0.5)**((T-Tpeak)/Telim)
+    #    AUC1 = integrate.quad(C1, 0, Tpeak)
+    #    AUC2 = integrate.quad(C2, Tpeak, 5*Telim)
+    #    AUC = AUC1 + AUC2
+    #    return AUC
+        
+    def optimize_schedule(self):
+        start_day = 0
+        stop_day = 1440
+        morning = 480
+        evening = 1320
+        #lunch = 780
+        interval = 30
+        no_drugs = len(self.drugs)
+        drug_names = {}
+        counter = 0
+        for drug in self.drugs:
+            drug_names[counter] = drug
+            counter += 1
+        def sum_function(entry, T):
+            out_list = []
+            out = 0
+            for x in drug_names:
+                out_list.append(self.master_function(drug_names[x], entry[x], T))
+            if out_list[0] != 0 and out_list[1] != 0:
+                out = sum(out_list)
+            return out
+        
+        time_matrix = list(itertools.combinations_with_replacement(range(morning, evening, interval), no_drugs))
+        time_matrix_results = []
+        for entry in time_matrix:
+            f = lambda T: sum_function(entry, T)            
+            AUC = integrate.quad(f, morning, 5*stop_day, limit=150)
+            time_matrix_results.append((AUC, entry))
+        return time_matrix_results
